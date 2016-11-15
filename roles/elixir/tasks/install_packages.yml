@@ -1,0 +1,49 @@
+---
+- name: Install Erlang packages
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - 'erlang'
+
+- name: Install latest elixir
+  apt:
+    name: elixir
+    state: present
+
+
+
+
+- name: Install Erlang repository
+  apt_repository:
+    repo: 'deb http://packages.erlang-solutions.com/ubuntu {{ansible_lsb.codename}} contrib'
+    state: present
+  tags: [erlang]
+- name: Install Erlang repository key
+  apt_key:
+    url: http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+  tags: [erlang]
+- name: Install Erlang
+  apt:
+    name: erlang
+    update_cache: yes
+    state: present
+  tags: [erlang]
+- apt: name=unzip
+- name: Install Elixir
+  get_url:
+    url: https://github.com/elixir-lang/elixir/releases/download/v{{elixir_version}}/Precompiled.zip
+    dest: /usr/local/src/elixir-{{elixir_version}}.zip
+  register: elixir_updates
+- shell: 'cd /usr/local/src && unzip /usr/local/src/elixir-{{elixir_version}}.zip -d /usr/local/src/elixir-{{elixir_version}}'
+  when: elixir_updates | changed
+- file:
+    src: '/usr/local/src/elixir-{{elixir_version}}/bin/{{item}}'
+    dest: '/usr/local/bin/{{item}}'
+    state: link
+  with_items:
+    - iex
+    - mix
+    - elixir
+    - elixirc

@@ -1,4 +1,11 @@
+# The name of your project
+project_name my-project
+
+# Where your project will be available
 domain local.my-project.com
+
+# The type of project (ansible playbook) (available: elixir-react)
+type elixir-react
 
 ## You can provide an alternate network interface ( default is lxcbr0 )
 # network_interface lxcbr0
@@ -12,7 +19,9 @@ gateway_user ubuntu
 #
 # e.g. Checkout your project somewhere and then mount it like so:
 #
-# mount ~/development/my-project ~/my-project
+# mount ~/development/my-project ~/project
+# Note: ~/project is hard coded
+
 mount ~/.gitconfig ~/.gitconfig
 mount ~/.bashrc ~/.bashrc
 mount ~/.vimrc ~/.vimrc

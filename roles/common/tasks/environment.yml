@@ -1,0 +1,20 @@
+---
+- name: Write environment variables
+  template:
+    src: environment_vars.j2
+    dest: /etc/default/devenv
+    group: app
+    mode: 0640
+
+- name: Write welcome message
+  template:
+    src: welcome.j2
+    dest: /etc/update-motd.d/20-devenv
+    group: root
+    mode: 0755
+
+- name: remove default ubuntu header
+  action: file path=/etc/update-motd.d/00-header state=absent
+
+- name: remove default ubuntu help text
+  action: file path=/etc/update-motd.d/10-help-text state=absent

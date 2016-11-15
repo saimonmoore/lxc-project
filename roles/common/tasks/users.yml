@@ -1,0 +1,6 @@
+---
+- name: Add `ubuntu` user to `app` group
+  user: name=ubuntu groups=app append=yes shell=/bin/bash
+
+- name: Write `.bash_profile` for `ubuntu` user
+  template: src=bash_profile dest=/home/ubuntu/.bash_profile group=app mode=0644

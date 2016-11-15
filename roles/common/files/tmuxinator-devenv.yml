@@ -1,0 +1,14 @@
+# ~/.tmuxinator/dev.yml
+
+name: devenv
+root: ~
+
+windows:
+  - console:
+    - iex -S mix phoenix.server
+  - phoenix:
+    - cd ~/project
+    - mix phoenix.server
+  - react:
+    - cd project
+    - npm start

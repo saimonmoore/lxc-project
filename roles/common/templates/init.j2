@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Init backend
+echo 'Initializing backend...'
+pushd project
+mix deps.get
+mix ecto.create
+popd
+
+# Init teambox-frontend
+echo 'Initializing frontend...'
+pushd project
+npm install
+popd

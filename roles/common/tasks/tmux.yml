@@ -1,0 +1,13 @@
+- name: Install tmux
+  apt:
+    name: 'tmux'
+    state: present
+
+- name: Install tmuxinator for the greater good
+  gem: name=tmuxinator state=latest user_install=no
+
+- name: Create /home/ubuntu/.tmuxinator directory
+  file: path=/home/ubuntu/.tmuxinator state=directory
+
+- name: Copy tmuxinator configuration
+  copy: src=files/tmuxinator-devenv.yml dest=/home/ubuntu/.tmuxinator/devenv.yml

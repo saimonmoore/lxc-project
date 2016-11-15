@@ -1,0 +1,18 @@
+---
+- name: Create npm global packages directory
+  file:
+    path: /home/ubuntu/.npm-packages
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: 0775
+
+- name: Copy npm configuration
+  template:
+    src: npmrc
+    dest: /home/ubuntu/.npmrc
+
+- name: Install npm3 v3.10.6
+  npm: name=npm global=yes version=3.10.6
+  sudo: true
+

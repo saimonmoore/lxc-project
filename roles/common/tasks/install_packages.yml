@@ -1,0 +1,59 @@
+---
+- name: Install build_essentials package
+  apt:
+    name: 'build-essential'
+    state: present
+
+- name: Install ca-certificates
+  apt:
+    name: 'ca-certificates'
+    state: present
+
+- name: APT HTTPS transport
+  apt:
+    name: 'apt-transport-https'
+    state: present
+
+- name: Install development packages
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - 'libxml2-dev'
+    - 'libxslt-dev'
+    - 'libsasl2-dev'
+    - 'libicu52'
+
+- name: Install Git package
+  apt:
+    name: 'git'
+    state: present
+
+- name: Install Git flow package
+  apt:
+    name: 'git-flow'
+    state: present
+
+- name: Add Apt repository for Node.js
+  apt_repository: repo='deb https://deb.nodesource.com/node_6.x trusty main'
+    state=present
+    update_cache=yes
+
+- name: Install NodeJS 6.9.11
+  apt:
+    name: nodejs=6.9.1-1nodesource1~xenial1
+    state: present
+
+- name: Install sqlite
+  apt:
+    name: '{{item}}'
+    state: present
+  with_items:
+    - 'sqlite3'
+    - 'libsqlite3-dev'
+
+- name: Install figlet package
+  apt:
+    name: 'figlet'
+    state: present

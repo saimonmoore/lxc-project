@@ -1,0 +1,14 @@
+---
+- name: Install libs needed for proper GPG/CA cert handling
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - 'curl'
+    - 'python-urllib3'
+    - 'python-openssl'
+    - 'python-pyasn1'
+
+- name: Install deb.nodesource.com GPG KEYS
+  shell: curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -

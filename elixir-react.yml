@@ -1,0 +1,14 @@
+---
+- hosts: {{ project_name }}-dev
+  remote_user: {{ gateway_user }}
+  sudo: yes
+
+  roles:
+    - common
+    - db
+    - { role: elixir elixir_version: '1.3.4' }
+    - react
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python2.7
+    local_domain: {{ domain }}

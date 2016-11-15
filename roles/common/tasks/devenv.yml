@@ -1,0 +1,21 @@
+---
+- stat: path=/etc/devenv
+  register: devenv
+
+- name: Write devenv init script
+  when: devenv.stat.exists == False
+  template:
+    src: init.j2
+    dest: /tmp/devenv.sh
+    group: root
+    mode: 0755
+
+- name: Inits devenv environment
+  when: devenv.stat.exists == False
+  shell: /tmp/devenv.sh
+  args:
+    chdir: /home/ubuntu
+
+- name: Touch file for one-time init
+  file: path=/etc/devenv state=touch mode=0755
+  when: devenv.stat.exists == False

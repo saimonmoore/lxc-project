@@ -1,0 +1,9 @@
+---
+- include: groups.yml
+- include: gpg_keys.yml
+- include: users.yml
+- include: install_packages.yml
+- include: install_node_packages.yml
+- include: tmux.yml
+- include: environment.yml
+- include: devenv.yml
