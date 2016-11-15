@@ -1,0 +1,21 @@
+domain local.my-project.com
+
+## You can provide an alternate network interface ( default is lxcbr0 )
+# network_interface lxcbr0
+
+# GATEWAY USER (Your username)
+gateway_user ubuntu
+
+# MOUNTING FILES AND FOLDERS
+#
+# mount <host source> <container target>
+#
+# e.g. Checkout your project somewhere and then mount it like so:
+#
+# mount ~/development/my-project ~/my-project
+mount ~/.gitconfig ~/.gitconfig
+mount ~/.bashrc ~/.bashrc
+mount ~/.vimrc ~/.vimrc
+mount ~/.vim ~/.vim
+mount ~/.tmux.conf ~/.tmux.conf
+mount ~/.tmux-plugins ~/.tmux-plugins
