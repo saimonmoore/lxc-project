@@ -121,23 +121,51 @@ if [[ ! -e "${DOMAIN}" ]]; then
   echo -e "\033[31m${DOMAIN} not found!\e[0m" && exit 1
 fi
 
+REPOSITORIES=$(read_conf_option "repository" | uniq)
+
+declare -A REPOSITORIES_LOOKUP
+
+# Cloning repositories
+for REPOSITORY in "${REPOSITORIES[@]}"; do
+  if [[ -e "${BASE_REPOSITORIES_PATH}/${REPOSITORY}" ]]; then
+    echo -e "· ${REPOSITORY} \033[32mOK\e[0m"
+  else
+    echo -e "· ${REPOSITORY} \033[31mKO\e[0m \033[34mCloning ${REPOSITORY}...\e[0m"
+    REPOSITORY_NAME="`echo $REPOSITORY | cut -f 5 -d '/' | cut -f 1 -d '.'`"
+    git clone -q "${REPOSITORY}" "${BASE_REPOSITORIES_PATH}/${REPOSITORY_NAME}"
+  fi
+
+  REPOSITORIES_LOOKUP[${REPOSITORY}]="${BASE_REPOSITORIES_PATH}/$REPOSITORY"
+done
+
+# Mounting repository definitions
+MOUNT_ENTRIES=''
+for REPOSITORY_NAME in "${!REPOSITORIES_LOOKUP[@]}"
+do
+  REPOSITORY_PATH=${REPOSITORIES_LOOKUP[${REPOSITORY_NAME}]}
+  MOUNT_POINT="/var/lib/lxc/${CONTAINER}/rootfs/home/ubuntu/${REPOSITORY_NAME}"
+  MOUNT_ENTRIES="${MOUNT_ENTRIES}lxc.mount.entry = ${REPOSITORY_PATH//\/\//\/} ${MOUNT_POINT//\/\//\/} none bind.ro,create=dir 0.0\n"
+done
+
 EXTRA_MOUNTS=$(read_conf_option "mount" | uniq)
 
 # Mounting extra definitions
 while read MOUNT_DEF; do
+  MOUNT_DISABLED=''
   eval MOUNT_PATH=$(echo ${MOUNT_DEF} | cut -d" " -f 1)
 
-  if [[ -d ${MOUNT_PATH} ]]; then
+  if [[ -d ${MOUNT_PATH} ]]; then 
     MOUNT_TYPE='dir'
-  elif [[ -f ${MOUNT_PATH} ]]; then
+  elif [[ -f ${MOUNT_PATH} ]]; then 
     MOUNT_TYPE='file'
-  else
+  else 
     echo "WARNING: ${MOUNT_PATH} mount definition not found!!!!!!"
+    MOUNT_DISABLED='# '
   fi
 
   MOUNT_POINT=$(echo "${MOUNT_DEF}" | cut -d" " -f 2 | sed 's/~/\/home\/ubuntu/')
   MOUNT_POINT="/var/lib/lxc/${CONTAINER}/rootfs${MOUNT_POINT}"
-  MOUNT_ENTRIES="${MOUNT_ENTRIES}lxc.mount.entry = ${MOUNT_PATH} ${MOUNT_POINT} none bind.ro,create=${MOUNT_TYPE} 0.0\n"
+  MOUNT_ENTRIES="${MOUNT_DISABLED}${MOUNT_ENTRIES}lxc.mount.entry = ${MOUNT_PATH} ${MOUNT_POINT} none bind.ro,create=${MOUNT_TYPE} 0.0\n"
 done <<< "${EXTRA_MOUNTS}"
 
 MOUNT_ENTRIES=$(echo -ne "$MOUNT_ENTRIES")
